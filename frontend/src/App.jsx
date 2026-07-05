@@ -84,16 +84,6 @@ function App() {
     } catch (err) {
       console.error(err.message);
     }
-
-    // setTodos((prev) =>
-    //   prev.map((todo) =>
-    //     todo.id === id
-    //       ? todo.completed === false
-    //         ? { ...todo, completed: true }
-    //         : { ...todo, completed: false }
-    //       : todo,
-    //   ),
-    // );
   };
 
   return (
