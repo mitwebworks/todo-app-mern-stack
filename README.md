@@ -3,6 +3,7 @@
     In this part of this project, I'll be building backend APIs for our To-do List app in Express.js & MongoDB.
 
 ## Commands
+
     mkdir backend
     cd backend
     npm init
@@ -10,15 +11,15 @@
     npm i express --> Install Express.Js
     npm i nodemon --> Install Nodemon
     npm i dotenv --> .env package
-    npm i mongoose --> To communicate with MongoDB
+    npm i dotenv --> .env package
+    npm i cors --> cors setup
 
     npm run dev --> Start the server
-
 
 ## APIs Endpoints
 
 ### GET /api/tasks
-    
+
     Description: Get the list of all tasks in the system.
     Access: Public
 
@@ -46,14 +47,12 @@
     Body: {
         "isCompleted": boolean
     }
-    Access: Public    
+    Access: Public
 
 ### DELETE /api/tasks/:id
 
     Description: Mark a task as complete or pending.
-    Access: Public    
-
-
+    Access: Public
 
 # PART 2: Connect the backend with Frontend app
 
