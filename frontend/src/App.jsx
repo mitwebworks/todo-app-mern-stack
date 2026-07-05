@@ -78,7 +78,7 @@ function App() {
             ? todo.isCompleted == false
               ? { ...todo, isCompleted: true }
               : { ...todo, isCompleted: false }
-            : t,
+            : todo,
         ),
       );
     } catch (err) {
