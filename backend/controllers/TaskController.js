@@ -3,9 +3,9 @@ const Task = require("../models/Task");
 // 1. Get all tasks
 const getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find().sort({ createdAt: -1 });
 
-    res.status(200).json({
+    res.status(200).json({g
       success: true,
       data: tasks,
     });
@@ -85,7 +85,7 @@ const updateTask = async (req, res) => {
 const markTask = async (req, res) => {
   const { id } = req.params;
 
-  const { isCompleted } = req.body;
+  const { isCompleted } = req.body || false;
 
   try {
     const task = await Task.findByIdAndUpdate(

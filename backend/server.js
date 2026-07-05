@@ -18,9 +18,12 @@ const cors = require("cors");
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://todo-app-in-mern-stack.netlify.app", // your Netlify URL
+    origin: [
+      "https://todo-app-in-mern-stack.netlify.app", // Netlify URL
+      "http://localhost:5173",                      // Local dev URL
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  }),
+  })
 );
 app.use((req, res, next) => {
   console.log(req.path, req.method);
