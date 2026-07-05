@@ -12,8 +12,16 @@ const tasksRouter = require("./routes/tasks");
 const dotenv = require("dotenv");
 dotenv.config();
 
+const cors = require("cors");
+
 // Middlewares
 app.use(express.json());
+app.use(
+  cors({
+    origin: "https://todo-app-in-mern-stack.netlify.app/", // your Netlify URL
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  }),
+);
 app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();

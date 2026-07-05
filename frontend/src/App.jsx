@@ -3,6 +3,7 @@ import axios from "axios";
 import ToDoItem from "./components/ToDoItem";
 import { ToDoProvider } from "./contexts/ToDoContext";
 import ToDoForm from "./components/ToDoForm";
+import api from "./api";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -10,8 +11,8 @@ function App() {
 
   // Fetch initial data
   useEffect(() => {
-    axios
-      .get("/api/tasks")
+    api
+      .get("/tasks")
       .then((res) => setTodos(res.data.data))
       .catch((err) => console.error("Error: ", err))
       .finally(() => setTimeout(() => setLoading(false), 400));
@@ -22,7 +23,7 @@ function App() {
     if (!label || label == "") return;
 
     try {
-      const res = await axios.post("/api/tasks", {
+      const res = await api.post("/tasks", {
         task: label,
         isCompleted: false,
       });
@@ -35,7 +36,7 @@ function App() {
   // Update task
   const updateItem = async (id, label) => {
     try {
-      const res = await axios.put(`/api/tasks/${id}`, {
+      const res = await api.put(`/tasks/${id}`, {
         task: label,
       });
       setTodos(
@@ -55,7 +56,7 @@ function App() {
   // Remove task
   const removeItem = async (id) => {
     try {
-      const res = await axios.delete(`/api/tasks/${id}`);
+      const res = await api.delete(`/tasks/${id}`);
       setTodos((prev) => prev.filter((each) => each._id !== id));
     } catch (err) {
       console.error(err.message);
@@ -68,7 +69,7 @@ function App() {
     let newStatus = currentStatus === true ? false : true;
 
     try {
-      const res = await axios.patch(`/api/tasks/${id}`, {
+      const res = await api.patch(`/tasks/${id}`, {
         isCompleted: newStatus,
       });
       setTodos(
