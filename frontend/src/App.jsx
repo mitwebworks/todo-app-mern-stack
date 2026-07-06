@@ -4,22 +4,57 @@ import ToDoItem from "./components/ToDoItem";
 import { ToDoProvider } from "./contexts/ToDoContext";
 import ToDoForm from "./components/ToDoForm";
 import api from "./api";
+import SearchForm from "./components/SearchForm";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Fetch initial data
   useEffect(() => {
+    setError(null);
     api
       .get("/tasks")
       .then((res) => setTodos(res.data.data))
-      .catch((err) => console.error("Error: ", err))
+      .catch((err) => {
+        setError(err.message);
+        console.error("Error: ", err);
+      })
       .finally(() => setTimeout(() => setLoading(false), 400));
   }, []);
 
+  // search todos
+  const searchItem = async (label) => {
+    setError(null);
+    if (!label || label == "") {
+      try {
+        const res = await api.get("/tasks");
+        setTodos(res.data.data);
+      } catch (err) {
+        setError(err.message);
+        console.error(err);
+      }
+      return;
+    }
+
+    try {
+      const res = await api.get("/tasks/search/" + label);
+      setTodos(res.data.data);
+
+      if (res.data.data.length == 0) {
+        setError(`No matching result found for '${label}'`);
+      }
+
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
+    }
+  };
+
   // Add new Task
   const addItem = async (label) => {
+    setError(null);
     if (!label || label == "") return;
 
     try {
@@ -29,12 +64,14 @@ function App() {
       });
       setTodos([res.data.data, ...todos]);
     } catch (err) {
+      setError(err.message);
       console.error(err);
     }
   };
 
   // Update task
   const updateItem = async (id, label) => {
+    setError(null);
     try {
       const res = await api.put(`/tasks/${id}`, {
         task: label,
@@ -45,6 +82,7 @@ function App() {
         ),
       );
     } catch (err) {
+      setError(err.message);
       console.error(err.message);
     }
 
@@ -55,16 +93,19 @@ function App() {
 
   // Remove task
   const removeItem = async (id) => {
+    setError(null);
     try {
       const res = await api.delete(`/tasks/${id}`);
       setTodos((prev) => prev.filter((each) => each._id !== id));
     } catch (err) {
+      setError(err.message);
       console.error(err.message);
     }
   };
 
   // Mark completion
   const toggleComplete = async (id) => {
+    setError(null);
     const currentStatus = todos.find((todo) => todo._id === id)?.isCompleted;
     let newStatus = currentStatus === true ? false : true;
 
@@ -82,13 +123,21 @@ function App() {
         ),
       );
     } catch (err) {
+      setError(err.message);
       console.error(err.message);
     }
   };
 
   return (
     <ToDoProvider
-      value={{ todos, addItem, updateItem, removeItem, toggleComplete }}
+      value={{
+        todos,
+        addItem,
+        updateItem,
+        removeItem,
+        toggleComplete,
+        searchItem,
+      }}
     >
       <div className="bg-zinc-800 h-screen w-full overflow-y-scroll fixed inset-0 p-10">
         <div className="max-w-xl mx-auto my-20 flex flex-col gap-10">
@@ -96,6 +145,13 @@ function App() {
             ToDo List App
           </h1>
           <ToDoForm />
+          <SearchForm />
+          {error && (
+            <div className="bg-red-200 text-red-500 font-medium text-sm border border-red-500 p-3 rounded-lg">
+              {error}
+            </div>
+          )}
+
           <div className="flex flex-col gap-3">
             {!loading ? (
               todos.map((todo) => <ToDoItem key={todo._id} todo={todo} />)

@@ -6,6 +6,7 @@ const {
   updateTask,
   markTask,
   deleteTask,
+  searchTask,
 } = require("../controllers/TaskController");
 const router = express.Router();
 
@@ -58,5 +59,15 @@ router.patch("/:id", markTask);
  * Access: Public
  */
 router.delete("/:id", deleteTask);
+
+/**
+ * Endpoint: /search/:id
+ * Method: GET
+ * Description: Search a task
+ * Body: NA
+ * Params: query
+ * Access: Public
+ */
+router.get("/search/:query", searchTask);
 
 module.exports = router;

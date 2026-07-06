@@ -64,3 +64,28 @@
     npm install axios
 
     npm run dev --> Start the app
+
+# How to Run
+
+    Run the following commands in the terminal
+    >> cd backend
+    >> npm install
+    >> npm run dev #Backend server started
+
+    Run the following commands in another terminal
+    >> cd frontend
+    >> npm install
+    >> npm run dev #Frontend server started
+
+    Note: Make sure to setup .env variables
+
+# Env variables
+
+## Backend
+
+    PORT=4001
+    MONGO_URI=<db connection string>
+
+## Frontend
+
+    VITE_API_URL=http://localhost:4001/api

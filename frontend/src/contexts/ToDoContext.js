@@ -13,6 +13,7 @@ const ToDoContext = createContext({
   updateItem: (id, label) => {},
   removeItem: (id) => {},
   toggleComplete: (id) => {},
+  searchItem: (id) => {},
 });
 
 // const useToDo = useContext(ToDoContext);

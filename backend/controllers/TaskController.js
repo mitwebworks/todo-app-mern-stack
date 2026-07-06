@@ -1,6 +1,6 @@
 const Task = require("../models/Task");
 
-// 1. Get all tasks
+// Get all tasks
 const getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find().sort({ createdAt: -1 });
@@ -17,7 +17,7 @@ const getAllTasks = async (req, res) => {
   }
 };
 
-// 2. Create a new task
+// Create a new task
 const createTask = async (req, res) => {
   const { task, isCompleted } = req.body;
 
@@ -43,7 +43,7 @@ const createTask = async (req, res) => {
   }
 };
 
-// 3. Update a task by id
+// update a task by id
 const updateTask = async (req, res) => {
   const { id } = req.params;
   const { task, isCompleted } = req.body;
@@ -81,7 +81,7 @@ const updateTask = async (req, res) => {
   }
 };
 
-// 4. Mark completed a task by id
+// mark completed a task by id
 const markTask = async (req, res) => {
   const { id } = req.params;
 
@@ -113,7 +113,7 @@ const markTask = async (req, res) => {
   }
 };
 
-// 5. Delete a task by id
+// delete a task by id
 const deleteTask = async (req, res) => {
   const { id } = req.params;
 
@@ -139,4 +139,44 @@ const deleteTask = async (req, res) => {
   }
 };
 
-module.exports = { getAllTasks, createTask, updateTask, markTask, deleteTask };
+// search tasks by label
+const searchTask = async (req, res) => {
+  const { query } = req.params || '';
+
+  // if (!query || query.length == 0 || query == " ") {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: "Query string is required",
+  //   });
+  // }
+
+  try {
+    const tasks = await Task.find({ task: new RegExp(query, "i") }).sort({createdAt: -1});
+
+    // if (!tasks || tasks.length == 0) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     message: "No matching result found",
+    //   });
+    // }
+
+    res.status(200).json({
+      success: true,
+      data: tasks,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+module.exports = {
+  getAllTasks,
+  createTask,
+  updateTask,
+  markTask,
+  deleteTask,
+  searchTask,
+};

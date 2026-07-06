@@ -9,7 +9,7 @@ const ToDoItem = ({ todo }) => {
 
   const editTodo = () => {
     updateItem(todo._id, todoMsg);
-    setTodo(todoMsg);
+    // setTodo(todoMsg);
   };
 
   const toggleCompleted = () => {
@@ -33,7 +33,7 @@ const ToDoItem = ({ todo }) => {
         />
         <input
           type="text"
-          className={`w-full ${todo.isCompleted ? "line-through" : ""} `}
+          className={`w-full ${todo.isCompleted ? "line-through" : ""} ${isEditable ? "bg-zinc-200" : "" } `}
           readOnly={!isEditable}
           value={todoMsg}
           onChange={(e) => setTodoMsg(e.target.value)}
