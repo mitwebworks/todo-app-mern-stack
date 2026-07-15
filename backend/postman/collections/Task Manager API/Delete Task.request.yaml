@@ -1,0 +1,27 @@
+$kind: http-request
+name: Delete Task
+method: DELETE
+url: '{{baseUrl}}/api/tasks/{{taskId}}'
+order: 6000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Response has success true", function () {
+        const json = pm.response.json();
+        pm.expect(json.success).to.be.true;
+      });
+
+      pm.test("Deleted task data is returned", function () {
+        const json = pm.response.json();
+        pm.expect(json.data).to.have.property("_id");
+        pm.expect(json.data._id).to.equal(pm.environment.get("taskId"));
+      });
+
+      pm.test("Clear taskId from environment", function () {
+        pm.environment.unset("taskId");
+      });

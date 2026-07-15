@@ -27,25 +27,13 @@ function App() {
   // search todos
   const searchItem = async (label) => {
     setError(null);
-    if (!label || label == "") {
-      try {
-        const res = await api.get("/tasks");
-        setTodos(res.data.data);
-      } catch (err) {
-        setError(err.message);
-        console.error(err);
-      }
-      return;
-    }
-
     try {
-      const res = await api.get("/tasks/search/" + label);
+      const res = await api.get(`/tasks?query=${label}`);
       setTodos(res.data.data);
 
       if (res.data.data.length == 0) {
         setError(`No matching result found for '${label}'`);
       }
-
     } catch (err) {
       setError(err.message);
       console.error(err);
@@ -76,19 +64,19 @@ function App() {
       const res = await api.put(`/tasks/${id}`, {
         task: label,
       });
-      setTodos(
-        todos.map((todo) =>
-          todo._id === id ? { ...todo, task: res.data.task } : todo,
-        ),
-      );
+      if (res.success) {
+        setTodos(
+          todos.map((todo) =>
+            todo._id === id ? { ...todo, task: res.data.task } : todo,
+          ),
+        );
+      } else {
+        setError(err.message);
+      }
     } catch (err) {
       setError(err.message);
       console.error(err.message);
     }
-
-    // setTodos((prev) =>
-    //   prev.map((todo) => (todo.id === id ? { ...todo, label: label } : todo)),
-    // );
   };
 
   // Remove task

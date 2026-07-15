@@ -2,8 +2,13 @@ const Task = require("../models/Task");
 
 // Get all tasks
 const getAllTasks = async (req, res) => {
+  const { query } = req.query;
+  let filters = {};
+  if (query && query.trim() !== "") {
+    filters = { task: { $regex: query, $options: "i" } };
+  }
   try {
-    const tasks = await Task.find().sort({ createdAt: -1 });
+    const tasks = await Task.find(filters).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -140,37 +145,39 @@ const deleteTask = async (req, res) => {
 };
 
 // search tasks by label
-const searchTask = async (req, res) => {
-  const { query } = req.params || '';
+// const searchTask = async (req, res) => {
+//   const { query } = req.params || "";
 
-  // if (!query || query.length == 0 || query == " ") {
-  //   return res.status(400).json({
-  //     success: false,
-  //     message: "Query string is required",
-  //   });
-  // }
+//   // if (!query || query.length == 0 || query == " ") {
+//   //   return res.status(400).json({
+//   //     success: false,
+//   //     message: "Query string is required",
+//   //   });
+//   // }
 
-  try {
-    const tasks = await Task.find({ task: new RegExp(query, "i") }).sort({createdAt: -1});
+//   try {
+//     const tasks = await Task.find({ task: new RegExp(query, "i") }).sort({
+//       createdAt: -1,
+//     });
 
-    // if (!tasks || tasks.length == 0) {
-    //   return res.status(404).json({
-    //     success: false,
-    //     message: "No matching result found",
-    //   });
-    // }
+//     // if (!tasks || tasks.length == 0) {
+//     //   return res.status(404).json({
+//     //     success: false,
+//     //     message: "No matching result found",
+//     //   });
+//     // }
 
-    res.status(200).json({
-      success: true,
-      data: tasks,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       data: tasks,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: err.message,
+//     });
+//   }
+// };
 
 module.exports = {
   getAllTasks,
@@ -178,5 +185,4 @@ module.exports = {
   updateTask,
   markTask,
   deleteTask,
-  searchTask,
 };

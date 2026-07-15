@@ -1,0 +1,37 @@
+$kind: http-request
+name: Update Task
+method: PUT
+url: '{{baseUrl}}/api/tasks/{{taskId}}'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "task": "Updated task from Postman",
+      "isCompleted": false
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Response has success true", function () {
+        const json = pm.response.json();
+        pm.expect(json.success).to.be.true;
+      });
+
+      pm.test("Task was updated correctly", function () {
+        const json = pm.response.json();
+        pm.expect(json.data.task).to.equal("Updated task from Postman");
+      });
+
+      pm.test("Response contains _id", function () {
+        const json = pm.response.json();
+        pm.expect(json.data._id).to.equal(pm.environment.get("taskId"));
+      });

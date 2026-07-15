@@ -1,0 +1,41 @@
+$kind: http-request
+name: Create Task
+method: POST
+url: '{{baseUrl}}/api/tasks'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "task": "Test task from Postman",
+      "isCompleted": false
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Response has success true", function () {
+        const json = pm.response.json();
+        pm.expect(json.success).to.be.true;
+      });
+
+      pm.test("Created task has correct fields", function () {
+        const json = pm.response.json();
+        pm.expect(json.data).to.have.property("_id");
+        pm.expect(json.data).to.have.property("task");
+        pm.expect(json.data).to.have.property("isCompleted");
+        pm.expect(json.data.task).to.equal("Test task from Postman");
+        pm.expect(json.data.isCompleted).to.be.false;
+      });
+
+      pm.test("Save task ID to environment", function () {
+        const json = pm.response.json();
+        pm.environment.set("taskId", json.data._id);
+      });

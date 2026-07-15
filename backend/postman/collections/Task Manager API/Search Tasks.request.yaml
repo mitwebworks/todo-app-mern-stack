@@ -1,0 +1,32 @@
+$kind: http-request
+name: Search Tasks
+method: GET
+url: '{{baseUrl}}/api/tasks'
+order: 2000
+queryParams:
+  - key: query
+    value: test
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Response has success true", function () {
+        const json = pm.response.json();
+        pm.expect(json.success).to.be.true;
+      });
+
+      pm.test("Response data is an array", function () {
+        const json = pm.response.json();
+        pm.expect(json.data).to.be.an("array");
+      });
+
+      pm.test("All results match search query", function () {
+        const json = pm.response.json();
+        json.data.forEach(function (task) {
+          pm.expect(task.task.toLowerCase()).to.include("test");
+        });
+      });
